@@ -1,14 +1,17 @@
 package com.stratomine.bukkit.plugins.stats;
 
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
 public class StatsPluginTest extends TestCase {
 	
 	@Test
-	public void testPlugin() {
-		fail("Not yet implemented");
+	public void testNormalizeMetric() {
+		assertEquals("foo.bar.baz", StatsPlugin.normalizeMetric("foo.bar", "baz"));
+		assertEquals("foo.bar.baz", StatsPlugin.normalizeMetric("foo.bar.", "baz"));
+		assertEquals("foo.bar.baz", StatsPlugin.normalizeMetric("foo.bar..", "baz"));
+		assertEquals("foo.bar.baz", StatsPlugin.normalizeMetric("foo.bar ", " baz"));
 	}
 	
 }

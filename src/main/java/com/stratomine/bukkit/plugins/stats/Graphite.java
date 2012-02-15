@@ -5,19 +5,14 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.logging.Level;
 
 public class Graphite {
 	
-	private final String host;
-	private final int port;
+	private final StatsPlugin plugin;
 	
-	public Graphite(String host) {
-		this(host, 2003);
-	}
-	
-	public Graphite(String host, int port) {
-		this.host = host;
-		this.port = port;
+	public Graphite(StatsPlugin plugin) {
+		this.plugin = plugin;
 	}
 	
 	public void update(String metric, Object value) throws UnknownHostException, IOException {
@@ -29,21 +24,35 @@ public class Graphite {
 			writer.write(line);
 			writer.flush();
 			writer.close();
+			info("Sent \"%s\"", line);
 		} finally {
 			socket.close();
 		}
 	}
 	
-	public String generateLine(String metric, Object value) {
-		return String.format("%s %s %s", metric, value, System.currentTimeMillis() / 1000);
+	public static String generateLine(String metric, Object value) {
+		return String.format("%s %s %s\n", metric, value, System.currentTimeMillis());
+	}
+	
+	public StatsPlugin getPlugin() {
+		return plugin;
 	}
 	
 	public String getHost() {
-		return host;
+		return getPlugin().getGraphiteHost();
 	}
 	
 	public int getPort() {
-		return port;
+		return getPlugin().getGraphitePort();
+	}
+	
+	private void info(String message, Object... objects) {
+		log(Level.INFO, message, objects);
+	}
+
+	private void log(Level level, String message, Object... objects) {
+		message = "[Graphite] " + message;
+		getPlugin().log(level, message, objects);
 	}
 	
 }
