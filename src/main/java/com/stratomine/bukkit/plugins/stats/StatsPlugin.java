@@ -6,8 +6,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.configuration.Configuration;
+import org.bukkit.entity.Animals;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Monster;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityListener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -56,6 +62,21 @@ public class StatsPlugin extends JavaPlugin {
 		};
 		manager.registerEvent(Event.Type.PLAYER_JOIN, listener, Event.Priority.Normal, this);
 		manager.registerEvent(Event.Type.PLAYER_QUIT, listener, Event.Priority.Normal, this);
+		
+		listener = new EntityListener() {
+			@Override
+			public void onEntityDeath(EntityDeathEvent event) {
+				Entity entity = event.getEntity();
+				if (entity instanceof Animals) {
+					update("deaths.animals", 1);
+				} else if (entity instanceof Monster) {
+					update("deaths.monsters", 1);
+				} else if (entity instanceof Player) {
+					update("deaths.players", 1);
+				}
+			}
+		};
+		manager.registerEvent(Event.Type.ENTITY_DEATH, listener, Event.Priority.Normal, this);
 	}
 	
 	public void increment(String metric, int delta) {
