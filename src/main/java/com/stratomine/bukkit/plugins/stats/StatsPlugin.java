@@ -14,6 +14,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityListener;
+import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -59,9 +60,15 @@ public class StatsPlugin extends JavaPlugin {
 			public void onPlayerQuit(PlayerQuitEvent event) {
 				decrement("players");
 			}
+
+			@Override
+			public void onPlayerChat(PlayerChatEvent event) {
+				update("chats", 1);
+			}
 		};
 		manager.registerEvent(Event.Type.PLAYER_JOIN, listener, Event.Priority.Normal, this);
 		manager.registerEvent(Event.Type.PLAYER_QUIT, listener, Event.Priority.Normal, this);
+		manager.registerEvent(Event.Type.PLAYER_CHAT, listener, Event.Priority.Normal, this);
 		
 		listener = new EntityListener() {
 			@Override
