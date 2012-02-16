@@ -31,7 +31,7 @@ public class Graphite {
 	}
 	
 	public static String generateLine(String metric, Object value) {
-		return String.format("%s %s %s\n", metric, value, System.currentTimeMillis());
+		return String.format("stats.%s %s %s\n", metric, value, System.currentTimeMillis());
 	}
 	
 	public StatsPlugin getPlugin() {
