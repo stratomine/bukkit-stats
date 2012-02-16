@@ -9,6 +9,7 @@ import org.bukkit.configuration.Configuration;
 import org.bukkit.event.Event;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -40,8 +41,9 @@ public class StatsPlugin extends JavaPlugin {
 	
 	private void registerEvents() {
 		PluginManager manager = getServer().getPluginManager();
+		Listener listener;
 		
-		Listener playerListener = new org.bukkit.event.player.PlayerListener() {
+		listener = new PlayerListener() {
 			@Override
 			public void onPlayerJoin(PlayerJoinEvent event) {
 				increment("players");
@@ -52,8 +54,8 @@ public class StatsPlugin extends JavaPlugin {
 				decrement("players");
 			}
 		};
-		manager.registerEvent(Event.Type.PLAYER_JOIN, playerListener, Event.Priority.Normal, this);
-		manager.registerEvent(Event.Type.PLAYER_QUIT, playerListener, Event.Priority.Normal, this);
+		manager.registerEvent(Event.Type.PLAYER_JOIN, listener, Event.Priority.Normal, this);
+		manager.registerEvent(Event.Type.PLAYER_QUIT, listener, Event.Priority.Normal, this);
 	}
 	
 	public void increment(String metric, int delta) {
