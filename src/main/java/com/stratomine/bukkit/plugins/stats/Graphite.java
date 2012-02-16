@@ -24,7 +24,7 @@ public class Graphite {
 			writer.write(line);
 			writer.flush();
 			writer.close();
-			info("Sent \"%s\"", line);
+			info("Sent \"%s\"", line.replaceAll("\n", "\\\\n"));
 		} finally {
 			socket.close();
 		}
