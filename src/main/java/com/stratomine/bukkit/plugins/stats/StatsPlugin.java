@@ -22,8 +22,6 @@ public class StatsPlugin extends JavaPlugin {
 	private Map<String, Integer> counters;
 	
 	public void onEnable() {
-		info("%s loaded", getDescription().getFullName());
-		
 		counters = new HashMap<String, Integer>();
 		
 		Configuration config = getConfig();
@@ -32,6 +30,8 @@ public class StatsPlugin extends JavaPlugin {
 		graphitePort = config.getInt("graphite.port", 2003);
 		
 		registerEvents();
+		
+		info("%s loaded", getDescription().getFullName());
 	}
 	
 	public void onDisable() {
