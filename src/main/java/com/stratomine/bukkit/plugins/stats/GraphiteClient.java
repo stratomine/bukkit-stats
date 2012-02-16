@@ -7,11 +7,11 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
 
-public class Graphite {
+public class GraphiteClient {
 	
 	private final StatsPlugin plugin;
 	
-	public Graphite(StatsPlugin plugin) {
+	public GraphiteClient(StatsPlugin plugin) {
 		this.plugin = plugin;
 	}
 	
