@@ -7,6 +7,9 @@ import java.util.logging.Logger;
 
 import org.bukkit.configuration.Configuration;
 import org.bukkit.event.Event;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -18,26 +21,39 @@ public class StatsPlugin extends JavaPlugin {
 	
 	private Map<String, Integer> counters;
 	
-	private PlayerListener playerListener;
-	
 	public void onEnable() {
 		info("%s loaded", getDescription().getFullName());
 		
 		counters = new HashMap<String, Integer>();
-		playerListener = new PlayerListener(this);
 		
 		Configuration config = getConfig();
 		namespace = config.getString("namespace");
 		graphiteHost = config.getString("graphite.host");
 		graphitePort = config.getInt("graphite.port", 2003);
 		
-		PluginManager manager = getServer().getPluginManager();
-		manager.registerEvent(Event.Type.PLAYER_JOIN, playerListener, Event.Priority.Normal, this);
-		manager.registerEvent(Event.Type.PLAYER_QUIT, playerListener, Event.Priority.Normal, this);
+		registerEvents();
 	}
 	
 	public void onDisable() {
 		// Do nothing
+	}
+	
+	private void registerEvents() {
+		PluginManager manager = getServer().getPluginManager();
+		
+		Listener playerListener = new org.bukkit.event.player.PlayerListener() {
+			@Override
+			public void onPlayerJoin(PlayerJoinEvent event) {
+				increment("players");
+			}
+
+			@Override
+			public void onPlayerQuit(PlayerQuitEvent event) {
+				decrement("players");
+			}
+		};
+		manager.registerEvent(Event.Type.PLAYER_JOIN, playerListener, Event.Priority.Normal, this);
+		manager.registerEvent(Event.Type.PLAYER_QUIT, playerListener, Event.Priority.Normal, this);
 	}
 	
 	public void increment(String metric, int delta) {
