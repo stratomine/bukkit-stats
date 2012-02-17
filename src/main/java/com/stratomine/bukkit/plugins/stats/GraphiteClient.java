@@ -5,7 +5,6 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.logging.Level;
 
 public class GraphiteClient {
 	
@@ -24,14 +23,13 @@ public class GraphiteClient {
 			writer.write(line);
 			writer.flush();
 			writer.close();
-			info("Sent \"%s\"", line.replaceAll("\n", "\\\\n"));
 		} finally {
 			socket.close();
 		}
 	}
 	
 	public static String generateLine(String metric, Object value) {
-		return String.format("stats.%s %s %s\n", metric, value, System.currentTimeMillis());
+		return String.format("stats.%s %s %s\n", metric, value, System.currentTimeMillis() / 1000);
 	}
 	
 	public StatsPlugin getPlugin() {
@@ -44,15 +42,6 @@ public class GraphiteClient {
 	
 	public int getPort() {
 		return getPlugin().getGraphitePort();
-	}
-	
-	private void info(String message, Object... objects) {
-		log(Level.INFO, message, objects);
-	}
-
-	private void log(Level level, String message, Object... objects) {
-		message = "[Graphite] " + message;
-		getPlugin().log(level, message, objects);
 	}
 	
 }
